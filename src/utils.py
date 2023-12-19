@@ -67,7 +67,7 @@ def plot_scatter_heatmaps(dataframe, target_variable):
     num_cols = 2
     num_rows = len(numeric_variables) -1
 
-    fig, axis = plt.subplots(num_rows, num_cols, figsize=(13, 6 * num_rows))
+    fig, axis = plt.subplots(num_rows, num_cols, figsize=(15, 7 * num_rows))
 
     for i, x_variable in enumerate(numeric_variables):
         # Evitar plotear la variable target
@@ -93,6 +93,23 @@ def general_heatmap(dataframe,target_variable):
     #Create general heatmap
     fig, axis = plt.subplots(figsize = (10, 7))
     sns.heatmap(reordered_df.corr(), annot = True, fmt = ".2f", cbar = False)
+    plt.tight_layout()
+    plt.show()
+
+# -------------------------------------------------------------------------------
+
+def general_large_heatmap(dataframe, target_variable):
+    # Reorder the df with the target column first
+    columns = [target_variable] + [col for col in dataframe if col != target_variable]
+    reordered_df = dataframe[columns]
+
+    # Shorten column names to the first 5 letters
+    shortened_columns = [col[:5] for col in reordered_df.columns]
+    reordered_df.columns = shortened_columns
+
+    # Create general heatmap
+    fig, axis = plt.subplots(figsize=(10, 7))
+    sns.heatmap(reordered_df.corr(), annot=True, fmt=".2f", cbar=False)
     plt.tight_layout()
     plt.show()
 
@@ -241,3 +258,16 @@ def corr_comparison(dataset,dataset2,dataset3,target):
     })
 
     return comparison_df
+
+# ------------------------------------------------------------------------------
+
+def simple_corr(dataset, target):
+    corr1 = dataset.corr()[target][:-1]
+
+    corr_df = pd.DataFrame({
+        'Variable': corr1.index,
+        'Score': corr1.values
+    })
+    corr_df = corr_df.sort_values(by='Score', ascending=False)
+
+    return corr_df
